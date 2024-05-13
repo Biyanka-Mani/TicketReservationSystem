@@ -1,0 +1,86 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewData["Title"] = "Booking Details";
+}
+@model TicketReservationDataAccess.Data.Entites.Models.DetailsBooking
+
+<style>
+    body {
+        font-family: 'Arial', sans-serif;
+        background-color: #f8f9fa;
+        color: #343a40;
+        margin: 20px;
+    }
+
+    h1 {
+        color: #007bff;
+    }
+
+    .booking-details {
+        border: 1px solid #dee2e6;
+        border-radius: 5px;
+        padding: 15px;
+        margin-top: 20px;
+        background-color: #fff;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .details-label {
+        font-weight: bold;
+        color: #007bff;
+    }
+
+    .details-value {
+        margin-bottom: 10px;
+    }
+
+    .status {
+        font-weight: bold;
+        text-transform: uppercase;
+        color: @Model.Status == "Booked" ? "#28a745" : (@Model.Status == "Pending" ? "#ffc107" : "#dc3545");
+    }
+</style>
+
+
+<body>
+    <div class="container">
+        <h1>Booking Details</h1>
+
+        <div class="booking-details">
+            <div class="details-label">Booking Id:</div>
+            <div class="details-value">@Model.BookingId</div>
+
+            <div class="details-label">Journey Route:</div>
+            <div class="details-value">@Model.JourneyRoute</div>
+
+            <div class="details-label">Departure Time:</div>
+            <div class="details-value">@Model.DepartureTime</div>
+
+            <div class="details-label">Arrival Time:</div>
+            <div class="details-value">@Model.ArrivalTime</div>
+
+            <div class="details-label">Number of Tickets Booked:</div>
+            <div class="details-value">@Model.NoOfTicketsBooked</div>
+
+            <div class="details-label">Amount Paid:</div>
+            <div class="details-value">@Model.Amount</div>
+
+            <div class="details-label">Departure Destination:</div>
+            <div class="details-value">@Model.DepartureDestination</div>
+
+            <div class="details-label">Departure Terminal:</div>
+            <div class="details-value">@Model.depatureTerminal</div>
+
+            <div class="details-label">Arrival Destination:</div>
+            <div class="details-value">@Model.ArrivalDestination</div>
+
+            <div class="details-label">Arrival Terminal:</div>
+            <div class="details-value">@Model.arrivalTerminal</div>
+
+            <div class="details-label">Status:</div>
+            <div class="details-value status">@Model.Status</div>
+        </div>
+    </div>
+</body>

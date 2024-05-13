@@ -1,0 +1,120 @@
+﻿@using TicketReservation.App.Models.Enums;
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    @if (Model.Id == 0)
+    {
+        ViewData["Title"] = "Add Schedule";
+    }
+    else
+    {
+        ViewData["Title"] = "Edit Schedule";
+    }
+}
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+}
+@model TicketReservation.App.Models.AddEditScheduleModel
+
+<div class="container">
+    <h2 class="mt-4 mb-4">@((Model.Id == 0) ? "Add Schedule" : "Edit Schedule")</h2>
+
+    <form id="addEditScheduleForm" asp-controller="Adminstrator" autocomplete="off"  asp-action="@((Model.Id == 0) ? "AddSchedule" : "EditSchedule")" method="post">
+        @if (Model.Id != 0)
+        {
+            <input type="hidden" id="ScheduleId" name="ScheduleId" value="@Model.Schedule.ScheduleId"  />
+
+        }
+
+       
+
+        <div class="form-group">
+            <label for="departureTime">Departure Time:</label>
+            <input type="datetime-local" class="form-control" id="departureTime" name="departureTime" value="@Model.Schedule.DepartureTime.ToString("yyyy-MM-ddTHH:mm")" required>
+        </div>
+
+        <div class="form-group">
+            <label for="arrivalTime">Arrival Time:</label>
+            <input type="datetime-local" class="form-control" id="arrivalTime" name="arrivalTime" value="@Model.Schedule.ArrivalTime.ToString("yyyy-MM-ddTHH:mm")" required>
+        </div>
+
+        <div class="form-group">
+            <label for="IsActiveSchedule">Schedule Status:</label>
+            <select class="form-control" id="IsActiveSchedule" name="IsActiveSchedule" required>
+                <option value="true" selected="@Model.Schedule.IsActiveSchedule">Active</option>
+                <option value="false" selected="@(!Model.Schedule.IsActiveSchedule)">Inactive</option>
+            </select>
+        </div>
+
+       <div class="form-group">
+    <label for="scheduleStatusEnum">Status:</label>
+    <select class="form-control" id="scheduleStatusEnum" name="scheduleStatusEnum">
+                @foreach (var value in Enum.GetValues(typeof(StatusEnum)))
+        {
+                    <option value="@((int)value)" selected="@(Model.Schedule.ScheduleStatusEnum == (StatusEnum)value)">@value.ToString()</option>
+        }
+    </select>
+</div>
+
+<div class="form-group">
+    <label for="modeOfTransport">Mode of Transport:</label>
+    <select class="form-control" id="modeOfTransport" name="modeOfTransport">
+        @foreach (var value in Enum.GetValues(typeof(ModeOfTransport)))
+        {
+                    <option value="@((int)value)" selected= "@(Model.Schedule.modeOfTransport == (ModeOfTransport)value)" >@value.ToString()</option>
+        }
+    </select>
+</div>
+
+<div class="form-group">
+    <label for="timeOfDay">Time of Day:</label>
+    <select class="form-control" id="timeOfDay" name="timeOfDay">
+        @foreach (var value in Enum.GetValues(typeof(TimeOfDayEnum)))
+        {
+            <option value="@((int)value)" selected="@(Model.Schedule.TimeOfDay == (TimeOfDayEnum)value)">@value.ToString()</option>
+        }
+    </select>
+</div>
+
+
+        <div class="form-group">
+            <label for="routeId">Route Name:</label>
+            <select class="form-control" id="routeId" name="routeId" required>
+                @foreach (var route in Model.scheduleAddRequset.Route)
+                {
+                    <option value="@route.id" selected="@(Model.Schedule.RouteId == route.id)">@route.RouteName</option>
+                }
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="vehicleId">Vehicle Name:</label>
+            <select class="form-control" id="vehicleId" name="vehicleId" required>
+                @foreach (var vehicle in Model.scheduleAddRequset.Vechicle)
+                {
+                    <option value="@vehicle.Id" selected="@(Model.Schedule.VehicleId == vehicle.Id)">@vehicle.VehicleName</option>
+                }
+            </select>
+        </div>
+
+        <button type="submit" class="btn btn-success mt-3">@((Model.Id == 0) ? "Add Schedule" : "Update Schedule")</button>
+        <a href="@Url.Action("ViewSchedules", "Adminstrator")" class="btn btn-secondary mt-3">Go Back</a>
+    </form>
+</div>
+<script>
+    function toLocaleISOString(date) {
+        return new Date(date.getTime() - date.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
+    }
+
+    // Get current date and time in the user's local time zone
+    var currentDate = new Date();
+    var currentDateString = toLocaleISOString(currentDate);
+
+    // Set min attribute for departureTime input
+    document.getElementById('departureTime').min = currentDateString;
+
+    // Set min attribute for arrivalTime input
+    document.getElementById('arrivalTime').min = currentDateString;
+</script>

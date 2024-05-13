@@ -1,0 +1,53 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    @if (Model.Id == 0)
+    {
+        ViewData["Title"] = "Add Terminal";
+    }
+    else
+    {
+        ViewData["Title"] = "Edit Terminal";
+    }
+}
+@model TicketReservation.App.Models.TerminalViewModel;
+<div class="container">
+    <h2 class="mt-4 mb-4">@((Model.Id == 0) ? "Add Terminal" : "Edit Terminal")</h2>
+
+    <form id="terminalForm" asp-controller="Adminstrator" autocomplete="off" asp-action="@((Model.Id == 0) ? "AddTerminal" : "EditTerminal")" method="post">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        @if (Model.Id != 0)
+        {
+            <input type="hidden" asp-for="Id" />
+        }
+
+        <div class="form-group">
+            <label asp-for="TerminalName" class="control-label">Terminal Name:</label>
+            <input asp-for="TerminalName" type="text" class="form-control" id="TerminalName" name="TerminalName" value="@Model.TerminalName">
+            <span asp-validation-for="TerminalName" class="text-danger"></span>
+
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Location" class="control-label">Location:</label>
+            <input asp-for="Location" type="text" class="form-control" id="Location" name="Location" value="@Model.Location">
+            <span asp-validation-for="Location" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label for="TerminalStatus">TerminalStatus:</label>
+            <select class="form-control" id="TerminalStatus" name="TerminalStatus" >
+                <option value="true" selected="@Model.TerminalStatus">Active</option>
+                <option value="false" selected="@(!Model.TerminalStatus)">Inactive</option>
+            </select>
+        </div>
+
+        <button type="submit" class="btn btn-success mt-3">@((Model.Id == 0) ? "Add Terminal" : "Update Terminal")</button>
+    </form>
+</div>
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

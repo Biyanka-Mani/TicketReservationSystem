@@ -1,0 +1,222 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]-TicketReservationApp</title>
+
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/TicketReservation.App.styles.css" asp-append-version="true" />
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+
+    
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+
+    <style>
+         .reservation-text {
+            font-family: 'Playfair Display', sans-serif;
+            font-size: 30px;
+            font-weight: 700; 
+            color: black;
+        }
+
+        .custom-dark-text {
+            font-family: 'Playfair Display', sans-serif;
+            font-size: 24px;
+            font-weight:300;
+            color: black; 
+        }
+
+    </style>
+   
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-light bg-secondary border-bottom box-shadow mb-3">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="#">
+                    <img src="/images/logo-png.png" alt="Logo" height="40">
+                </a> <span class="reservation-text">ReserveRide</span>
+             
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                    <ul class="navbar-nav flex-grow-1">
+                        <!-- User is authenticated as User -->
+                            @if (User.IsInRole("User") && User.Identity.IsAuthenticated)
+                            {
+                                <li class="nav-item">
+
+                                <a class="nav-link custom-dark-text" asp-area="" asp-controller="Customer" asp-action="Index">
+                                        Home
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-house" viewBox="0 0 16 16">
+                                        <path d="M8.707 1.5a1 1 0 0 0-1.414 0L.646 8.146a.5.5 0 0 0 .708.708L2 8.207V13.5A1.5 1.5 0 0 0 3.5 15h9a1.5 1.5 0 0 0 1.5-1.5V8.207l.646.647a.5.5 0 0 0 .708-.708L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293zM13 7.207V13.5a.5.5 0 0 1-.5.5h-9a.5.5 0 0 1-.5-.5V7.207l5-5z" />
+                                    </svg>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                <a class="nav-link  custom-dark-text" asp-area="" asp-controller="Customer" asp-action="MyBookings">My Bookings</a>
+                                </li>
+                                <li class="nav-item">
+                                <a class="nav-link  custom-dark-text" asp-area="" asp-controller="Customer" asp-action="SearchRoutes">Book Ticket</a>
+                                </li>
+                               
+
+                            <li class="nav-item dropdown ms-auto">
+                                <a class="nav-link dropdown-toggle  custom-dark-text" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    My Dashboard
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-person" viewBox="0 0 16 16">
+                                        <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6m2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0m4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4m-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10s-3.516.68-4.168 1.332c-.678.678-.83 1.418-.832 1.664z" />
+                                    </svg>
+                                </a>
+                                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                    <a class="dropdown-item  custom-dark-text" asp-area="" asp-controller="Customer" asp-action="EditProfileView">Edit Profile</a>
+                                    <a class="dropdown-item  custom-dark-text" asp-area="" asp-controller="Customer" asp-action="ChangePasswordView">Change Password</a>
+                                </div>
+                            </li>
+                                <li class="nav-item ">
+                                <a class="nav-link  custom-dark-text" asp-area="" asp-controller="Home" asp-action="UserLogout">Logout</a>
+                               
+                                </li>
+                            }
+                        <!-- User is authenticated as Administrator -->
+                        @if (User.IsInRole("Administrator") && User.Identity.IsAuthenticated)
+                        {
+                            <li class="nav-item ">
+                                <a class="nav-link  custom-dark-text" asp-area="" asp-controller="Adminstrator" asp-action="Index">
+                                    Home
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-house" viewBox="0 0 16 16">
+                                        <path d="M8.707 1.5a1 1 0 0 0-1.414 0L.646 8.146a.5.5 0 0 0 .708.708L2 8.207V13.5A1.5 1.5 0 0 0 3.5 15h9a1.5 1.5 0 0 0 1.5-1.5V8.207l.646.647a.5.5 0 0 0 .708-.708L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293zM13 7.207V13.5a.5.5 0 0 1-.5.5h-9a.5.5 0 0 1-.5-.5V7.207l5-5z" />
+                                    </svg>
+                                </a>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle  custom-dark-text" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Fare Service
+                                </a>
+                                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                    <a class="dropdown-item  custom-dark-text" asp-area="" asp-controller="Adminstrator" asp-action="SetFareView">Set Fare</a>
+                                    <a class="dropdown-item  custom-dark-text" asp-area="" asp-controller="Adminstrator" asp-action="UserFareSearchView">User Fare Search</a>
+                                </div>
+                            </li >
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle  custom-dark-text" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    ViewBookings
+                                </a>
+                                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                    <a class="dropdown-item  custom-dark-text" asp-area="" asp-controller="Adminstrator" asp-action="ViewBookingsByRouteSearch">Search Route</a>
+                                    <a class="dropdown-item  custom-dark-text" asp-area="" asp-controller="Adminstrator" asp-action="SchedulesViewBooking">Schedules List</a>
+                                </div>
+                                
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link  custom-dark-text" asp-area="" asp-controller="Adminstrator" asp-action="Terminals">Terminals</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link  custom-dark-text" asp-area="" asp-controller="Adminstrator" asp-action="Routes">Routes</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link  custom-dark-text" asp-area="" asp-controller="Adminstrator" asp-action="ViewSchedules">Schedules</a>
+                            </li>
+
+                            <li class="nav-item dropdown ms-auto">
+                                <a class="nav-link dropdown-toggle  custom-dark-text" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                   Quick Links
+                                </a>
+                                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                    <a class="nav-link  custom-dark-text" asp-area="" asp-controller="Adminstrator" asp-action="DestinationView">Destinations</a>
+                                    <a class="nav-link  custom-dark-text" asp-area="" asp-controller="Adminstrator" asp-action="VehiclesView">Vehicles</a>
+                                </div>
+
+                            </li>
+                            <li class="nav-item ">
+                                <a class="nav-link  custom-dark-text" asp-area="" asp-controller="Home" asp-action="AdminLogout">Logout</a>
+                               
+                            </li>
+                        }
+                        <!-- User is not authenticated -->
+                        @if (ViewContext.RouteData.Values["controller"].ToString() == "Home" && ViewContext.RouteData.Values["action"].ToString() == "UserPage")
+                        {
+                          
+                            <ul class="navbar-nav ms-auto">
+                                <li class="nav-item">
+                                    <a class="nav-link custom-dark-text" asp-area="" asp-controller="Home" asp-action="SignUpView">Sign Up</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link custom-dark-text" asp-area="" asp-controller="Home" asp-action="UserLogin">Login</a>
+                                </li>
+                            </ul>
+                        }
+                        @if (ViewContext.RouteData.Values["controller"].ToString() == "Home" && ViewContext.RouteData.Values["action"].ToString() == "AdminPage")
+                        {
+                            <li class="nav-item ms-auto">
+                                <a class="nav-link custom-dark-text" asp-area="" asp-controller="Home" asp-action="AdminLogin">Login</a>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+             <div class="my-custom-content">
+
+             </div>
+        </main>
+    </div>
+    <style>
+        
+        .nav-item.dropdown:hover .dropdown-menu {
+            display: block;
+        }
+
+        .img{
+            width:100px;
+        }
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border: 1px solid #ddd;
+            z-index: 1;
+        }
+
+        .dropdown-item {
+            color: #333;
+        }
+
+         .dropdown-item:hover {
+                background-color: #f8f9fa;
+            }
+
+        .logo-style {
+            width: 100px;
+            
+        }
+    </style>
+    <script>
+        // JavaScript to show and hide the dropdown
+        function showDropdown() {
+            document.querySelector('.dropdown-menu').style.display = 'block';
+        }
+
+        function hideDropdown() {
+            document.querySelector('.dropdown-menu').style.display = 'none';
+        }
+    </script>
+    <footer class="border-top footer text-muted fixed-bottom bg-secondary">
+        <div class="container text-center custom-dark-text ">
+            <p class="mb-0">&copy; 2024 - TicketReservationApp - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a></p>
+        </div>
+    </footer>
+
+ 
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

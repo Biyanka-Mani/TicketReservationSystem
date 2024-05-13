@@ -1,0 +1,43 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewData["Title"] = "Schedule Revenue";
+}
+
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            color: #333; 
+        }
+
+        h1 {
+            text-align: center;
+            margin-top: 50px;
+            color: #007BFF; 
+        }
+
+        h2 {
+            text-align: center;
+            color:black;
+        }
+    </style>
+
+<body>
+    <h1>Total Revenue</h1>
+    <h2>
+        Revenue: @ViewBag.TotalRevenue
+    </h2>
+
+    <button type="button" class="btn btn-secondary btn-lg mr-3" onclick="goBack()">
+        <i class="fas fa-times-circle"></i> Go Back
+    </button>
+</body>
+<script>
+    function goBack() {
+        window.history.back();
+    }
+</script>

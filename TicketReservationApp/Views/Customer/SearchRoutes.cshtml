@@ -1,0 +1,132 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewData["Title"] = "Search Route";
+}
+@if (TempData["ErrorMessage"] != null)
+{
+    <div id="errorAlert" class="alert alert-danger">@TempData["ErrorMessage"]</div>
+}
+<style>
+    .fade-out {
+        opacity: 1;
+        transition: opacity 2s ease-out; 
+    }
+
+    .hidden {
+        display: none;
+    }
+</style>
+
+@model List<TicketReservation.App.Models.DestinationViewModel>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-body">
+                    <h1 class="text-center text-primary">Search Routes</h1>
+                    <h2 class="text-center text-muted mb-4">Enter Route and Passenger Information</h2>
+
+                    <form method="get" autocomplete="off" action="@Url.Action("SearchRoutesUser", "Customer")">
+
+                        <div class="form-group">
+                            <label for="startingPoint" class="form-label">Starting Point:</label>
+                            <div class="input-group">
+                                <input type="text" list="destinations" id="startingPointSearch" class="form-control" placeholder="Search starting point.." oninput="updateSelectedStartingPointId()">
+                                <datalist id="destinationst">
+                                    @foreach (var destination in Model)
+                                    {
+                                        <option value="@destination.Destination_name" data-id="@destination.Id"></option>
+                                    }
+                                </datalist>
+                                <input type="hidden" id="SelectedStartingPointId" name="SelectedStartingPointId" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="endingPoint" class="form-label">End Point:</label>
+                            <div class="input-group">
+                                <input type="text" list="destinations" id="EndPointSearch" class="form-control" placeholder="Search end point.." oninput="updateSelectedEndPointId()">
+                                <datalist id="destinations">
+                                    @foreach (var destination in Model)
+                                    {
+                                        <option value="@destination.Destination_name" data-id="@destination.Id"></option>
+                                    }
+                                </datalist>
+                                <input type="hidden" id="SelectedEndPointId" name="SelectedEndPointId" />
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="NumberOfPassengers">Passenger Count:</label>
+                            <input type="number" class="form-control" id="NumberOfPassengers" name="NumberOfPassengers" required max="10" oninput="validatePassengerCount()" />
+                            <small id="passengerCountError" class="text-danger"></small>
+                        </div>
+
+                        <div class="text-center mt-3">
+                            <button type="submit" class="btn btn-primary">Search Routes</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+    <script>
+        setTimeout(function () {
+            document.getElementById('successAlert').classList.add('hidden');
+            document.getElementById('errorAlert').classList.add('hidden');
+        }, 5000);
+
+        function updateSelectedStartingPointId() {
+            var input = document.getElementById("startingPointSearch");
+            var selectedIdInput = document.getElementById("SelectedStartingPointId");
+            var datalist = document.getElementById("destinations");
+
+            var selectedOption = getSelectedOption(input, datalist);
+            if (selectedOption) {
+                selectedIdInput.value = selectedOption.getAttribute("data-id");
+            } else {
+                selectedIdInput.value = "";
+            }
+        }
+
+        function updateSelectedEndPointId() {
+            var input = document.getElementById("EndPointSearch");
+            var selectedIdInput = document.getElementById("SelectedEndPointId");
+            var datalist = document.getElementById("destinations");
+
+            var selectedOption = getSelectedOption(input, datalist);
+            if (selectedOption) {
+                selectedIdInput.value = selectedOption.getAttribute("data-id");
+            } else {
+                selectedIdInput.value = "";
+            }
+        }
+
+        function getSelectedOption(input, datalist) {
+            var inputValue = input.value;
+            var options = datalist.querySelectorAll("option");
+
+            for (var i = 0; i < options.length; i++) {
+                if (options[i].value === inputValue) {
+                    return options[i];
+                }
+            }
+
+            return null;
+        }
+
+    function validatePassengerCount() {
+        var passengerCountInput = document.getElementById("NumberOfPassengers");
+        var errorElement = document.getElementById("passengerCountError");
+
+        if (passengerCountInput.value > 10) {
+            errorElement.textContent = "You can book only up to 10 seats at once.";
+        } else {
+            errorElement.textContent = "";
+        }
+    }
+    </script>
+
+

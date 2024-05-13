@@ -1,0 +1,88 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewData["Title"] = "Route-ScheduleList";
+}
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+}
+
+
+@model List<TicketReservation.App.Models.Schedules>
+
+<div class="container mt-4">
+    <h2 class="text-center mb-4">Schedules</h2>
+    <table class="table table-bordered table-hover">
+        <thead class="thead-dark">
+            <tr>
+                <th scope="col">Schedule ID</th>
+                <th scope="col">Departure Time</th>
+                <th scope="col">Arrival Time</th>
+                <th scope="col">Active Schedule</th>
+                <th scope="col">Schedule Status</th>
+                <th scope="col">Mode of Transport</th>
+                <th scope="col">Time of Day</th>
+                <th scope="col">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var schedule in Model)
+            {
+                <tr>
+                    <th scope="row">@schedule.ScheduleId</th>
+                    <td>@schedule.DepartureTime.ToString("yyyy-MM-dd")</td>
+                    <td>@schedule.ArrivalTime.ToString("yyyy-MM-dd")</td>
+                    <td>
+                        @if (schedule.IsActiveSchedule)
+                        {
+                            <span class="text-success" title="Active Schedule">
+                                <i class="bi bi-check-circle"></i> Active
+                            </span>
+                        }
+                        else
+                        {
+                            <span class="text-danger" title="Inactive Schedule">
+                                <i class="bi bi-x-circle"></i> Inactive
+                            </span>
+                        }
+
+                    </td>
+                    <td>@schedule.ScheduleStatusEnum</td>
+                    <td>@schedule.modeOfTransport</td>
+                    <td>@schedule.TimeOfDay</td>
+                    <td>
+                        <div class="btn-group">
+
+                            <form asp-controller="Adminstrator" asp-action="Bookings" method="get" class="mr-3">
+                                <input type="hidden" name="scheduleId" value="@schedule.ScheduleId" />
+                                <button type="submit" class="btn btn-secondary">View Bookings</button>
+                            </form>
+
+                            <form asp-controller="Adminstrator" asp-action="RevenueForSchedule" method="get" class="mr-3">
+                                <input type="hidden" name="scheduleId" value="@schedule.ScheduleId" />
+                                <button type="submit" class="btn btn-success">Total Revenue</button>
+                            </form>
+                            @if (schedule.bookings.Count > 0 && schedule.bookings.Any(booking => booking.BookingStatus == "Booked"))
+                            {
+                                <form asp-controller="Adminstrator" asp-action="CancelAllBookings" method="Post" class="mr-3">
+                                    <input type="hidden" name="scheduleId" value="@schedule.ScheduleId" />
+                                    <button type="submit" class="btn btn-danger">Cancel All Bookings</button>
+                                </form>
+                            }
+                            else
+                            {
+                                <form asp-controller="Adminstrator" asp-action="CancelAllBookings" method="Post" class="mr-3">
+                                    <input type="hidden" name="scheduleId" value="@schedule.ScheduleId" />
+                                    <button type="submit" class="btn btn-danger" disabled>No Active Bookings</button>
+                                </form>
+                            }
+                            
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

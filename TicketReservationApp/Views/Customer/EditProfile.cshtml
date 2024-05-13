@@ -1,0 +1,99 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewData["Title"] = "Profile Edit";
+}
+@if (TempData["SuccessMessage"] != null)
+{
+    <div id="successAlert" class="alert alert-success">@TempData["SuccessMessage"]</div>
+}
+@if (TempData["ErrorMessage"] != null)
+{
+    <div id="errorAlert" class="alert alert-danger">@TempData["ErrorMessage"]</div>
+}
+@model TicketReservation.App.Models.UserViewModel
+
+<div class="container for-storing-username-and-pass">
+    <h2 class="text-center mb-4">Edit Profile</h2>
+    <form asp-controller="Customer" asp-action="EditUser" method="post" class="needs-validation" novalidate>
+        <input type="hidden" name="Id" value="@Model.Id" />
+
+        <div class="form-group">
+            <label asp-for="FirstName" class="control-label"></label>
+            <input type="text" id="FirstName" class="form-control" asp-for="FirstName" placeholder="Enter your first name">
+            <span asp-validation-for="FirstName" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="LastName" class="control-label"></label>
+            <input type="text" id="LastName" class="form-control" asp-for="LastName" placeholder="Enter your last name">
+            <span asp-validation-for="LastName" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Email" class="control-label"></label>
+            <input type="email" id="Email" class="form-control" asp-for="Email" placeholder="Enter your email">
+            <span asp-validation-for="Email" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Phone" class="control-label"></label>
+            <input type="text" id="Phone" class="form-control" asp-for="Phone" placeholder="Enter your phone number">
+            <span asp-validation-for="Phone" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Age" class="control-label"></label>
+            <input type="text" id="Age" class="form-control" asp-for="Age" value="@Model.Age" placeholder="Enter your age" required>
+            <span asp-validation-for="Age" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label for="BloodGroup">Blood Group</label>
+            <select id="BloodGroup" class="form-control" asp-for="BloodGroup">
+                <option value="A+">A+</option>
+                <option value="A-">A-</option>
+                <option value="B+">B+</option>
+                <option value="B-">B-</option>
+                <option value="O+">O+</option>
+                <option value="O-">O-</option>
+                <option value="AB+">AB+</option>
+                <option value="AB-">AB-</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="IdentityCardNumber" class="control-label"></label>
+            <input type="text" id="IdentityCardNumber" class="form-control" asp-for="IdentityCardNumber" value="@Model.IdentityCardNumber" placeholder="IdentityCardNumber">
+            <span asp-validation-for="IdentityCardNumber" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label for="SeatPreference">Seat Preference</label>
+            <select id="SeatPreference" class="form-control" asp-for="SeatPreference">
+                <option value="Aisle">Aisle</option>
+                <option value="Window">Window</option>
+                <option value="Middle">Middle</option>
+                <option value="Front">Front</option>
+                <option value="Back">Back</option>
+            </select>
+        </div>
+
+        <button class="btn btn-success btn-block mt-3" type="submit">Save Changes</button>
+        <a asp-action="Index" asp-controller="Customer" class="btn btn-secondary mt-3">Back </a>
+
+    </form>
+</div>
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
+<script>
+
+    setTimeout(function () {
+        document.getElementById('successAlert').classList.add('hidden');
+        document.getElementById('errorAlert').classList.add('hidden');
+    }, 5000);
+</script>

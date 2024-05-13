@@ -1,0 +1,38 @@
+﻿@{
+    ViewData["Title"] = "Booking Confirmation";
+}
+
+<div class="container mt-5">
+    <div class="card p-4">
+        <h2 class="text-center mb-4">Booking Confirmation</h2>
+        <p class="text-center">Are you sure you want to proceed with the booking?</p>
+
+        <div class="text-center">
+            <h1 class="display-4 text-success">Total Fare: $@ViewBag.fare</h1>
+        </div>
+
+        <form id="bookingForm" asp-controller="Customer" asp-action="Booking" method="post" class="text-center mt-4">
+            <input type="hidden" name="Scheduleid" value="@ViewBag.Scheduleid" />
+            <input type="hidden" name="passengercount" value="@ViewBag.passengercount" />
+
+            <button type="button" class="btn btn-danger btn-lg mr-3" onclick="submitForm()">
+                <i class="fas fa-check-circle"></i> Yes, Book Ticket
+            </button>
+
+        </form>
+        <button type="button" class="btn btn-secondary btn-lg mr-3" onclick="goBack()">
+            <i class="fas fa-times-circle"></i> No, Go Back
+        </button>
+    </div>
+</div>
+
+<script>
+    function submitForm() {
+        console.log("print");
+        document.getElementById('bookingForm').submit();
+    }
+
+    function goBack() {
+        window.history.back();
+    }
+</script>

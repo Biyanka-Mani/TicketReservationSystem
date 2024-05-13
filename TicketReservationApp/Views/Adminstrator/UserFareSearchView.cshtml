@@ -1,0 +1,124 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewData["Title"] = "UserFare";
+}
+@if (TempData["SuccessMessage"] != null)
+{
+    <div id="successAlert" class="alert alert-danger">@TempData["SuccessMessage"]</div>
+}
+@if (TempData["ErrorMessage"] != null)
+{
+    <div id="errorAlert" class="alert alert-danger">@TempData["ErrorMessage"]</div>
+}
+<style>
+    .fade-out {
+        opacity: 1;
+        transition: opacity 2s ease-out; /* Adjust the duration and easing as needed */
+    }
+
+    .hidden {
+        display: none;
+    }
+
+    .container {
+        max-width: 1000px; /* Adjust the width as needed */
+        margin: auto;
+    }
+
+    h1 {
+        color: Black;
+        text-align: center;
+    }
+
+    th, td {
+        text-align: center;
+    }
+</style>
+<h1>Enter Username To Fetch User</h1>
+@model List<TicketReservation.App.Models.UserModel>
+<form asp-action="SearchUserFare" asp-controller="Adminstrator" method="get" class="d-flex">
+    <div class="flex-grow-1 me-2">
+        <label for="UserSearch" class="form-label">Search User: </label>
+        <div class="input-group">
+            <input type="text" list="users" id="UserSearch" class="form-control" name="userSearch" placeholder="Search user...." oninput="handleInput()" value="@ViewBag.SelectedUserName">
+
+            <datalist id="users">
+                @foreach (var user in Model)
+                {
+                    Console.WriteLine(@user.Username);
+                    <option value="@user.Username" data-id="@user.Id"></option>
+                }
+            </datalist>
+            <input type="hidden" id="selectedUserId" name="selectedUserId" />
+
+        </div>
+    </div>
+
+    <button type="submit" class="btn btn-primary mt-2" id="selectedUserId">Search User</button>
+</form>
+@if (Model != null && Model.Any(user => user.Bookings != null && user.Bookings.Any()))
+{
+    <div class="container mt-5">
+        <h1 class="text-center">User Booking Fare</h1>
+
+        <table class="table table-bordered table-striped mt-4">
+            <thead class="thead-dark">
+                <tr>
+                    <th scope="col">Booking ID</th>
+                    <th scope="col">Number Of Tickets Booked</th>
+                    <th scope="col">Date of Booking</th>
+                    <th scope="col">Amount Paid</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var user in Model)
+                {
+                    if (user.Bookings != null)
+                    {
+                        foreach (var booking in user.Bookings)
+                        {
+                            <tr>
+                                <th scope="row">@booking.Id</th>
+                                <td>@booking.NumberOfTickets</td>
+                                <td>@booking.Created.Date.ToString("dd/MM/yyyy")</td>
+                                <td>$@booking.Amount</td>
+                            </tr>
+                        }
+                    }
+                }
+            </tbody>
+        </table>
+        <form asp-action="UserFareSearchView" asp-controller="Adminstrator" method="get">
+            <button type="submit" class="btn btn-primary mt-2">Search Another User</button>
+        </form>
+    </div>
+
+}
+
+<script>
+    setTimeout(function () {
+        document.getElementById('successAlert').classList.add('hidden');
+        document.getElementById('errorAlert').classList.add('hidden');
+    }, 5000);
+    function handleInput() {
+        var input = document.getElementById('UserSearch');
+        var datalist = document.getElementById('users');
+
+        // Find the selected option in the datalist
+        var selectedOption = Array.from(datalist.options).find(option => option.value === input.value);
+
+        // Access the data-id attribute of the selected option
+        var selectedId = selectedOption ? parseInt(selectedOption.getAttribute('data-id'), 10) : null;
+
+        // Update the hidden input field with the selected ID
+        document.getElementById('selectedUserId').value = selectedId ? selectedId.toString() : '';
+
+        // You can enable/disable the button based on whether an option is selected
+        var button = document.getElementById('SerachuserButton');
+        button.disabled = !selectedId;
+    }
+</script>
+
+

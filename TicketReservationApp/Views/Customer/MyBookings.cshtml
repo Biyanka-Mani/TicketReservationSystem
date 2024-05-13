@@ -1,0 +1,100 @@
+﻿@{
+    ViewData["Title"] = "My Bookings";
+}
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div id="errorAlert" class="alert alert-danger">@TempData["ErrorMessage"]</div>
+}
+<style>
+    .fade-out {
+        opacity: 1;
+        transition: opacity 2s ease-out; 
+    }
+
+    .hidden {
+        display: none;
+    }
+</style>
+
+@model List<TicketReservation.App.Models.Bookings>
+<h2>My Bookings</h2>
+<style>
+    
+    .table-custom {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+        .table-custom th, .table-custom td {
+            border: 1px solid #dddddd;
+            padding: 12px;
+            text-align: left;
+        }
+
+        .table-custom th {
+            background-color: #f2f2f2;
+        }
+
+    .btn-details {
+        background-color: #5bc0de;
+        color: #fff;
+    }
+
+    .btn-cancel {
+        background-color: #d9534f;
+        color: #fff;
+    }
+</style>
+
+<table class="table-custom">
+    <thead>
+        <tr>
+            <th scope="col">Booking ID</th>
+            <th scope="col">Schedule ID</th>
+            <th scope="col">Tickets Booked</th>
+            <th scope="col">Transport Mode</th>
+            <th scope="col">Booking Status</th>
+            <th scope="col">Date of Booking</th>
+            <th scope="col">Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var Booking in Model)
+        {
+            <tr>
+                <th scope="row">@Booking.Id</th>
+                <td>@Booking.ScheduleId</td>
+                <td>@Booking.NumberOfTickets</td>
+                <td>@Booking.ModeOfTransport</td>
+                <td>@Booking.BookingStatus</td>
+                <td>@Booking.Created.ToString("yyyy-MM-dd")</td> 
+                <td>
+                    @if (User.IsInRole("User"))
+                    {
+                        <form asp-controller="Customer" asp-action="Details" asp-route-id="@Booking.Id" method="get" class="d-inline">
+                            <input type="hidden" name="bookingId" value="@Booking.Id" />
+                            <button type="submit" class="btn btn-details">Details</button>
+                        </form>
+                    }
+
+                    @if (Booking.BookingStatus == "Booked")
+                    {
+                        <form asp-controller="Customer" asp-action="CancelConfirmation" method="post" class="d-inline">
+                            <input type="hidden" name="bookingId" value="@Booking.Id" />
+                            <button type="submit" class="btn btn-cancel">Cancel</button>
+                        </form>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<script>
+    setTimeout(function () {
+        document.getElementById('successAlert').classList.add('hidden');
+        document.getElementById('errorAlert').classList.add('hidden');
+    }, 5000);
+</script>

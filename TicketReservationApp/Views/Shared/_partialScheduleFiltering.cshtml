@@ -1,0 +1,60 @@
+﻿
+@using TicketReservation.App.Models.Enums
+@model List<TicketReservation.App.Models.Schedules>
+<table class="table table-bordered">
+    <thead class="thead-dark">
+        <tr>
+            <th scope="col">ScheduleId</th>
+            <th scope="col">Departure Time</th>
+            <th scope="col">Arrival Time</th>
+            <th scope="col">Active Schedule</th>
+            <th scope="col">Schedule Status</th>
+            <th scope="col">Mode Of Transport</th>
+            <th scope="col">Time Of Day</th>
+            <th scope="col">Actions</th>
+        </tr>
+    </thead>
+    <tbody id="schedulesBody">
+        @foreach (var schedule in Model)
+        {
+            @if ((string.IsNullOrEmpty(ViewBag.timeOfDayFilter) || schedule.TimeOfDay == ViewBag.timeOfDayFilter) &&
+           (string.IsNullOrEmpty(ViewBag.modeOfTransportFilter) || schedule.modeOfTransport == ViewBag.modeOfTransportFilter))
+            {
+                <tr>
+                    <th scope="row">@schedule.ScheduleId</th>
+                    <td>@schedule.DepartureTime</td>
+                    <td>@schedule.ArrivalTime</td>
+                    <td>
+                        @if (schedule.IsActiveSchedule)
+                        {
+                            <span class="text-success">&#10004;</span>
+                        }
+                        else
+                        {
+                            <span class="text-secondary">&#10008;</span>
+                        }
+                    </td>
+                    <td>@schedule.ScheduleStatusEnum</td>
+                    <td>@schedule.modeOfTransport</td>
+                    <td>@schedule.TimeOfDay</td>
+                    <td>
+                        @if (schedule.IsActiveSchedule && schedule.ScheduleStatusEnum == StatusEnum.Scheduled)
+                        {
+
+                            <input type="hidden" name="scheduleId" value="@schedule.ScheduleId" />
+                            <input type="hidden" name="passengercount" value="@ViewBag.passengercount" />
+                            <a href="@Url.Action("ConfirmTicket", "Customer", new { scheduleId = schedule.ScheduleId, passengercount = ViewBag.passengercount })" class="btn btn-success" method="get">Book </a>
+
+
+                        }
+                        else
+                        {
+                            <button type="button" class="btn btn-secondary" disabled>Not Available</button>
+                        }
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+</div>

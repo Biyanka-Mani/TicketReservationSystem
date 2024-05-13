@@ -1,0 +1,139 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewData["Title"] = "Set Fare";
+}
+@if (TempData["SuccessMessage"] != null)
+{
+    <div id="successAlert" class="alert alert-success">@TempData["SuccessMessage"]</div>
+}
+@if (TempData["ErrorMessage"] != null)
+{
+    <div id="errorAlert" class="alert alert-danger">@TempData["ErrorMessage"]</div>
+}
+
+@model TicketReservation.App.Models.FareRequest
+
+<style>
+    body {
+        font-family: 'Arial', sans-serif;
+        background-color: #f8f9fa;
+        margin: 20px;
+    }
+
+    .card {
+        max-width: 400px;
+        margin: 0 auto;
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .card-header {
+        color: Black;
+        text-align: center;
+        padding: 20px;
+        background-color: #fff;
+        border-top-left-radius: 8px;
+        border-top-right-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .card-body {
+        padding: 20px;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    label {
+        font-weight: bold;
+    }
+
+    select, input {
+        width: 100%;
+        padding: 10px;
+        margin-top: 5px;
+        margin-bottom: 15px;
+        border: 1px solid #ced4da;
+        border-radius: 4px;
+        box-sizing: border-box;
+    }
+
+    .text-danger {
+        color: #dc3545;
+    }
+
+    .btn-primary {
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    .btn-secondary {
+        background-color: #6c757d;
+        color: #fff;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 4px;
+        cursor: pointer;
+        margin-left: 10px;
+    }
+</style>
+
+<div class="card">
+    <div class="card-header">
+        <h2>Set Fare</h2>
+    </div>
+
+    <div class="card-body">
+        <form method="post" asp-action="SetFare" asp-controller="Adminstrator">
+
+            <div class="form-group">
+                <label for="RouteId">Select Route:</label>
+                <select class="form-control" id="RouteId" name="RouteId" required onchange="updateViewBag()">
+                    @foreach (var route in Model.routes)
+                    {
+                        <option value="@route.RouteId">@route.RouteName</option>
+                    }
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Fare" class="control-label">New Fare:</label>
+                <input asp-for="Fare" class="form-control" id="Fare" name="Fare" required />
+                <span asp-validation-for="Fare" class="text-danger"></span>
+            </div>
+
+            <input type="hidden" id="SelectedRouteId" name="SelectedRouteId" />
+
+            <button type="submit" class="btn btn-primary">Set Fare</button>
+            <a href="@Url.Action("Index", "Adminstrator")" class="btn btn-secondary">Go Back</a>
+        </form>
+    </div>
+</div>
+
+<script>
+    function updateViewBag() {
+        var selectedRouteId = document.getElementById('RouteId').value;
+        document.getElementById('SelectedRouteId').value = selectedRouteId;
+    }
+    setTimeout(function () {
+        document.getElementById('successAlert').classList.add('hidden');
+        document.getElementById('errorAlert').classList.add('hidden');
+    }, 5000);
+</script>
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
+
+

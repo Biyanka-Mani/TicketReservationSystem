@@ -1,0 +1,143 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewData["Title"] = "ScheduleList";
+}
+@using TicketReservation.App.Models.Enums
+
+@model List<TicketReservation.App.Models.Schedules>
+
+<div class="container mt-4">
+    <h1 class="text-center mb-4">Available Schedules</h1>
+
+    <div class="row mb-3">
+        <div class="col-md-6">
+            <label for="timeOfDayFilter">Filter by Time of Day:</label>
+            <select id="timeOfDayFilter" class="form-control" data-time-of-day="@ViewBag.timeOfDayFilter">
+                <option value="">All</option>
+                <option value="Morning">Morning</option>
+                <option value="Afternoon">Afternoon</option>
+                <option value="Evening">Evening</option>
+            </select>
+        </div>
+        <div class="col-md-6">
+            <label for="modeOfTransportFilter">Filter by Mode of Transport:</label>
+            <select id="modeOfTransportFilter" class="form-control" data-mode-of-transport="@ViewBag.modeOfTransportFilter">
+                <option value="">All</option>
+                <option value="Bus">Bus</option>
+                <option value="Train">Train</option>
+                <option value="Flight">Flight</option>
+            </select>
+        </div>
+        <div class="col-md-12 mt-3">
+            <button id="filterButton" class="btn btn-primary">Filter Schedules</button>
+        </div>
+    </div>
+
+    <table class="table table-bordered">
+        <thead class="thead-dark">
+            <tr>
+                <th scope="col">ScheduleId</th>
+                <th scope="col">Departure Time</th>
+                <th scope="col">Arrival Time</th>
+                <th scope="col">Active Schedule</th>
+                <th scope="col">Schedule Status</th>
+                <th scope="col">Mode Of Transport</th>
+                <th scope="col">Time Of Day</th>
+                <th scope="col">Actions</th>
+            </tr>
+        </thead>
+        <tbody id="schedulesBody">
+            @foreach (var schedule in Model)
+            {
+                @if ((string.IsNullOrEmpty(ViewBag.timeOfDayFilter) || schedule.TimeOfDay == ViewBag.timeOfDayFilter) &&
+                             (string.IsNullOrEmpty(ViewBag.modeOfTransportFilter) || schedule.modeOfTransport == ViewBag.modeOfTransportFilter))
+                {
+                    <tr>
+                        <th scope="row">@schedule.ScheduleId</th>
+                        <td>@schedule.DepartureTime</td>
+                        <td>@schedule.ArrivalTime</td>
+                        <td>
+                            @if (schedule.IsActiveSchedule)
+                            {
+                                <span class="text-success">&#10004;</span>
+                            }
+                            else
+                            {
+                                <span class="text-secondary">&#10008;</span>
+                            }
+                        </td>
+                        <td>@schedule.ScheduleStatusEnum</td>
+                        <td>@schedule.modeOfTransport</td>
+                        <td>@schedule.TimeOfDay</td>
+                        <td>
+                            @if (schedule.IsActiveSchedule && schedule.ScheduleStatusEnum == StatusEnum.Scheduled)
+                            {
+
+                                <input type="hidden" name="scheduleId" value="@schedule.ScheduleId" />
+                                <input type="hidden" name="passengercount" value="@ViewBag.passengercount" />
+
+                                <a href="@Url.Action("ConfirmTicket", "Customer", new { scheduleId = schedule.ScheduleId, passengercount = ViewBag.passengercount })" class="btn btn-success" method = "get">Book </a>
+
+
+                            }
+                            else
+                            {
+                                <button type="button" class="btn btn-secondary" disabled>Not Available</button>
+                            }
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>
+
+<script>
+    $(document).ready(function () {
+        // Initialize -viewbag
+        $("#timeOfDayFilter").val("@ViewBag.timeOfDayFilter");
+        $("#modeOfTransportFilter").val("@ViewBag.modeOfTransportFilter");
+
+       
+        $("#filterButton").click(function () {
+            filterSchedules();
+        });
+
+        function filterSchedules() {
+            var timeOfDayFilter = $("#timeOfDayFilter").val();
+            console.log("", timeOfDayFilter);
+            var modeOfTransportFilter = $("#modeOfTransportFilter").val();
+            console.log("", modeOfTransportFilter);
+
+           
+            var data = {
+                timeOfDayEnum: timeOfDayFilter,
+                modeOfTransport: modeOfTransportFilter,
+                SelectedStartingPointId: @ViewBag.SelectedStartingPointId,
+                SelectedEndPointId: @ViewBag.SelectedEndPointId,
+                NumberOfPassengers: @ViewBag.NumberOfPassengers
+                };
+
+            
+            
+            $.ajax({
+                url: "@Url.Action("ScheduleFiltering", "Customer")",
+                method: "GET",
+                data: data,
+                success: function (data) {
+                    console.log(data)
+                    $("#schedulesBody").empty();
+                    $('.table-bordered').find('table').remove();
+                    $('.table-bordered').html(data)
+                    
+                   
+                },
+                error: function (error) {
+                    console.log("Error filtering schedules:", error);
+                }
+            });
+        }
+    });
+</script>

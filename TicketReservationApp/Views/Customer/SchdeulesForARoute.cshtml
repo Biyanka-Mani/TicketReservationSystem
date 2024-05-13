@@ -1,0 +1,55 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewData["Title"] = "Route-ScheduleList";
+}
+@using TicketReservation.App.Models.Enums
+
+@model List<TicketReservation.App.Models.Schedules>
+
+<div class="container mt-4">
+    <h1 class="text-center mb-4">Schedules Avaliable!</h1>
+    <table class="table table-bordered">
+        <thead class="thead-dark">
+            <tr>
+                <th scope="col">ScheduleId</th>
+                <th scope="col">Departure Time</th>
+                <th scope="col">Arrival Time</th>
+                <th scope="col">Active Schedule</th>
+                <th scope="col">Schedule Status</th>
+                <th scope="col">Mode Of Transport</th>
+                <th scope="col">Seat Avaliablity</th>
+                <th scope="col">Time Of Day</th>
+               
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var schedule in Model)
+            {
+                <tr>
+                    <th scope="row">@schedule.ScheduleId</th>
+                    <td>@schedule.DepartureTime</td>
+                    <td>@schedule.ArrivalTime</td>
+                    <td>
+                        @if (schedule.IsActiveSchedule)
+                        {
+                            <span class="text-success">&#10004;</span>
+                        }
+                        else
+                        {
+                            <span class="text-secondary">&#10008;</span>
+                        }
+                    </td>
+                    <td>@schedule.ScheduleStatusEnum</td>
+                    <td>@schedule.modeOfTransport</td>
+                    <td>@schedule.seatCount</td>
+                    <td>@schedule.TimeOfDay</td>
+
+                </tr>
+            }
+        </tbody>
+    </table>
+    
+</div>
+

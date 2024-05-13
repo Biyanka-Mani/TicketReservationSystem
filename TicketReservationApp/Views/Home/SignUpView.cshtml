@@ -1,0 +1,96 @@
+﻿@{
+    ViewData["Title"] = "SignUp";
+}
+@model TicketReservation.App.Models.UserViewModel
+
+<div class="container mt-5">
+    <div class="card">
+        <div class="card-body">
+
+            <div class="row justify-content-center mb-3">
+                <div class="col-md-6">
+                    <hr class="my-4"> 
+                    <h1 class="text-center bg-light p-3">Create Account</h1> 
+                    <hr class="my-4"> 
+                    <form asp-action="SignUp" asp-controller="Home" class="needs-validation" novalidate>
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <div class="form-group">
+                            <label asp-for="Username" class="control-label">Username</label>
+                            <input asp-for="Username" class="form-control" required />
+                            <span asp-validation-for="Username" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="Userpassword" class="control-label"></label>
+                            <input asp-for="Userpassword" type="password" class="form-control" />
+                            <span asp-validation-for="Userpassword" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="FirstName" class="control-label"></label>
+                            <input asp-for="FirstName" class="form-control" />
+                            <span asp-validation-for="FirstName" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="LastName" class="control-label"></label>
+                            <input asp-for="LastName" class="form-control" />
+                            <span asp-validation-for="LastName" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Email" class="control-label"></label>
+                            <input asp-for="Email" class="form-control" />
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Phone" class="control-label"></label>
+                            <input asp-for="Phone" class="form-control" />
+                            <span asp-validation-for="Phone" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Age" class="control-label"></label>
+                            <input asp-for="Age" class="form-control" />
+                            <span asp-validation-for="Age" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="BloodGroup">Blood Group</label>
+                            <select id="BloodGroup" class="form-control" name="BloodGroup">
+                                <option value="A+">A+</option>
+                                <option value="A-">A-</option>
+                                <option value="B+">B+</option>
+                                <option value="B-">B-</option>
+                                <option value="O+">O+</option>
+                                <option value="O-">O-</option>
+                                <option value="AB+">AB+</option>
+                                <option value="AB-">AB-</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="IdentityCardNumber" class="control-label"></label>
+                            <input asp-for="IdentityCardNumber" class="form-control" />
+                            <span asp-validation-for="IdentityCardNumber" class="text-danger"></span>
+                        </div>
+
+
+                        <div class="form-group">
+                            <label for="SeatPreference">Seat Preference</label>
+                            <select id="SeatPreference" class="form-control" name="SeatPreference">
+                                <option value="Aisle">Aisle</option>
+                                <option value="Window">Window</option>
+                                <option value="Middle">Middle</option>
+                            </select>
+                        </div>
+                        <div class="form-group mt-3">
+                            <button type="submit" class="btn btn-primary" style="background-color: #007bff;">Create Account</button>
+                            <a asp-action="UserPage" asp-controller="Home" class="btn btn-secondary ml-2">Back to List</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

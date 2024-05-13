@@ -1,0 +1,129 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewData["Title"] = "Routes";
+}
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div id="successAlert" class="alert alert-success">@TempData["SuccessMessage"]</div>
+}
+@if (TempData["ErrorMessage"] != null)
+{
+    <div id="errorAlert" class="alert alert-danger">@TempData["ErrorMessage"]</div>
+}
+@model List<TicketReservation.App.Models.RouteViewModel>
+<style>
+
+    .fade-out {
+        opacity: 1;
+        transition: opacity 2s ease-out; 
+    }
+
+    .hidden {
+        display: none;
+    }
+
+</style>
+
+
+    <div class="d-flex justify-content-between align-items-center">
+        <h1 class="text-center mb-4">Routes</h1>
+        <a asp-controller="Adminstrator" asp-action="AddRouteView" class="btn btn-success">Add Route</a>
+
+    </div>
+ 
+
+    <table class="table table-bordered table-lg">
+        <thead class="thead-dark">
+            <tr>
+                <th scope="col">Route Id</th>
+                <th scope="col">Route Name</th>
+                <th scope="col">Departure Destination</th>
+                <th scope="col">Arrival Destination</th>
+                <th scope="col">BaseFare</th>
+                <th scope="col">Route Status</th>
+                <th scope="col">Departure Terminal</th>
+                <th scope="col">Arrival Terminal</th>
+                <th scope="col">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var route in Model)
+            {
+                <tr>
+                    <th scope="row">@route.id</th>
+                    <td>@route.RouteName</td>
+
+                    <td>
+                        @foreach (var departure in route.destinations.Where(t => t.Id == route.DepartureDestinationId))
+                        {
+                            @departure.Destination_name
+                        }
+                    </td>
+                    <td>
+                        @foreach (var arrival in route.destinations.Where(t => t.Id == route.ArrivalDestinationId))
+                        {
+                            @arrival.Destination_name
+                        }
+                    </td>
+                    <td>@route.BaseFare</td>
+                    <td>
+                        @if (route.RouteStatus)
+                        {
+                            <span class="text-success">&#10004;</span>
+                        }
+                        else
+                        {
+                            <span class="text-secondary">&#10008;</span>
+                        }
+                    </td>
+                    <td>
+                        @foreach (var departureTerminal in route.terminals.Where(t => t.Id == route.DepartureTerminalId))
+                        {
+                            @departureTerminal.TerminalName
+                        }
+                    </td>
+                    <td>
+                        @foreach (var arrivalTerminal in route.terminals.Where(t => t.Id == route.ArrivalTerminalId))
+                        {
+                            @arrivalTerminal.TerminalName
+                        }
+                    </td>
+                    <td>
+                        <div class="btn-group" role="group" aria-label="Route Actions">
+                            <form asp-controller="Adminstrator" asp-action="EditRouteView" method="get" class="mr-2">
+                                <input type="hidden" name="routeId" value="@route.id" />
+                                <button type="submit" class="btn btn-success">Update</button>
+                            </form>
+
+                            <form asp-controller="Adminstrator" asp-action="RouteDeleteion" method="post" onsubmit="return confirm('Are you sure you want to delete Route @route.RouteName?');">
+                                <input type="hidden" name="routeId" value="@route.id" />
+                                <button type="submit" class="btn btn-danger">Delete</button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+ 
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        setTimeout(function () {
+            var successAlert = document.getElementById('successAlert');
+            var errorAlert = document.getElementById('errorAlert');
+
+            if (successAlert) {
+                successAlert.classList.add('hidden');
+            }
+
+            if (errorAlert) {
+                errorAlert.classList.add('hidden');
+            }
+        }, 5000);
+    });
+</script>
+

@@ -1,0 +1,99 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewData["Title"] = "Admin Home";
+}
+@if (TempData["SuccessMessage"] != null)
+{
+    <div id="successAlert" class="alert alert-success">@TempData["SuccessMessage"]</div>
+}
+@if (TempData["ErrorMessage"] != null)
+{
+    <div id="errorAlert" class="alert alert-danger">@TempData["ErrorMessage"]</div>
+}
+@model List<TicketReservation.App.Models.RouteModel>
+<style>
+    
+    .route-box {
+      border: 1px solid grey;
+      padding: 10px;
+      margin: 10px;
+      border-radius: 5px;
+      height:80px;
+      cursor: pointer; 
+        transition: background-color 0.3s;
+    }
+
+    .fade-out {
+        opacity: 1;
+        transition: opacity 2s ease-out;
+    }
+
+    .hidden {
+        display: none;
+    }
+
+        .route-box:hover {
+            background-color: #f2f2f2;
+        }
+
+ 
+
+    .revenue-info {
+        margin-top: 10px;
+        font-size: 14px;
+    }
+</style>
+<div class="container mt-4">
+    <div class="card" style="min-height: @(Model.Count * 90 + 100)px;">
+        <div class="card-header d-flex justify-content-between">
+            <h5 class="card-title">Popular Routes</h5>
+            <div >
+                <a class="btn btn-success " asp-action="AddScheduleView" asp-controller="Adminstrator">Add Schedule</a>
+            </div>
+        </div>
+        <div class="card-body">
+           
+                @if (Model.Count != 0)
+                {
+                    @foreach (var route in Model)
+                    {
+                    <div class="route-box d-flex justify-content-between">
+                        <div>
+                            <h4>@route.RouteName</h4>
+                        </div>
+                        <div>
+                            <h4> Revenue : $@route.TotalRevenue</h4>
+                        </div>
+                    </div>
+                    } 
+
+                }
+                else
+                {
+                    <div><h2>No Popular Routes!</h2> </div>
+                }
+            
+        </div>
+        
+    </div>
+</div>
+
+<script>
+
+    document.addEventListener("DOMContentLoaded", function () {
+        setTimeout(function () {
+            var successAlert = document.getElementById('successAlert');
+            var errorAlert = document.getElementById('errorAlert');
+
+            if (successAlert) {
+                successAlert.classList.add('hidden');
+            }
+
+            if (errorAlert) {
+                errorAlert.classList.add('hidden');
+            }
+        }, 5000);
+    });
+</script>

@@ -1,0 +1,203 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    @if(Model.Id == 0)
+    {
+        ViewData["Title"] = "Add Route";
+    }
+    else
+    {
+        ViewData["Title"] = "Edit Route";
+    }
+}
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div id="errorAlert" class="alert alert-danger">@TempData["ErrorMessage"]</div>
+}
+
+@model TicketReservation.App.Models.AddeditRouteModel
+
+<div class="container">
+    <h2 class="mt-4 mb-4">@((Model.Id == 0) ? "Add Route" : "Edit Route")</h2>
+
+    <form id="addRouteForm" asp-controller="Adminstrator"   autocomplete="off" asp-action="@((Model.Id == 0) ? "AddRoute" : "EditRoute")" method="post">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        @if (Model.Id != 0)
+        {
+            <input type="hidden" asp-for="Id" />
+        }
+
+        <div class="form-group">
+            <label asp-for="Route.RouteName" class="control-label">Route Name:</label>
+            <input asp-for="Route.RouteName" type="text" class="form-control" id="RouteName" name="RouteName" value="@Model.Route.RouteName">
+            <span id="RouteNameValidationMessage" class="text-danger"></span>
+        </div>
+
+
+        <div class="form-group">
+            <label asp-for="Route.DepartureDestinationId" class="control-label">Departure Destination:</label>
+            <div class="input-group">
+                @{
+                    var departureDestination = Model.destinations.FirstOrDefault(d => d.Id == Model.Route.DepartureDestinationId);
+                    var departureDestinationName = departureDestination?.Destination_name ?? "";
+                }
+                <input asp-for="Route.DepartureDestinationId" type="text"  list="destinationst" id="startingPointSearch" class="form-control" value="@departureDestinationName">
+               
+                <datalist id="destinationst">
+                    @foreach (var destination in Model.destinations)
+                    {
+                        <option value="@destination.Destination_name" data-id="@destination.Id"></option>
+                    }
+                </datalist>
+                <input type="hidden" id="DepartureDestinationId" name="DepartureDestinationId" value="@Model.Route.DepartureDestinationId" />
+            </div>
+            <span asp-validation-for="Route.DepartureDestinationId" class="text-danger"></span>
+        </div>
+
+
+        <div class="form-group">
+            <label asp-for="Route.ArrivalDestinationId" class="control-label">Arrival Destination:</label>
+            <div class="input-group">
+                @{
+                    var arrivalDestination = Model.destinations.FirstOrDefault(d => d.Id == Model.Route.ArrivalDestinationId);
+                    var arrivalDestinationName = arrivalDestination?.Destination_name ?? "";
+                }
+                <input asp-for="Route.ArrivalDestinationId" type="text"  list="destinationst" id="EndPointSearch" class="form-control" value="@arrivalDestinationName">
+                <datalist id="destinationst">
+                    @foreach (var destination in Model.destinations)
+                    {
+                        <option value="@destination.Destination_name" data-id="@destination.Id"></option>
+                    }
+                </datalist>
+                <input type="hidden" id="ArrivalDestinationId" name="ArrivalDestinationId" value="@Model.Route.ArrivalDestinationId" />
+            </div>
+            <span asp-validation-for="Route.ArrivalDestinationId" class="text-danger"></span>
+        </div>
+
+
+        <div class="form-group">
+            <label asp-for="Route.BaseFare" class="control-label">Base Fare:</label>
+            <input type="number" class="form-control" id="BaseFare" name="BaseFare" value="@Model.Route.BaseFare" required>
+            <span id="BaseFareValidationMessage" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Route.DepartureTerminalId">Departure Terminal:</label>
+            <select class="form-control" id="DepartureTerminalId" name="DepartureTerminalId" >
+                @foreach (var terminal in Model.Terminals)
+                {
+                    <option value="@terminal.Id" selected="@(Model.Route.DepartureTerminalId==terminal.Id)">@terminal.TerminalName</option>
+                }
+            </select>
+            <span asp-validation-for="Route.DepartureTerminalId" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Route.ArrivalTerminalId">Arrival Terminal:</label>
+            <select class="form-control" id="ArrivalTerminalId" name="ArrivalTerminalId" >
+                @foreach (var terminal in Model.Terminals)
+                {
+                    <option value="@terminal.Id" selected="@(Model.Route.ArrivalTerminalId == terminal.Id)">@terminal.TerminalName</option>
+                }
+            </select>
+            <span asp-validation-for="Route.DepartureTerminalId" class="text-danger"></span>
+        </div>
+        
+        <div class="form-group">
+            <label for="RouteStatus">Route Status:</label>
+            <select class="form-control" id="RouteStatus" name="RouteStatus" required>
+                <option value="true" selected="@Model.Route.RouteStatus">Active</option>
+                <option value="false" selected="@(!Model.Route.RouteStatus)">Inactive</option>
+            </select>
+        </div>
+        
+        
+
+        <button type="submit" class="btn btn-success mt-3">@((Model.Id == 0) ? "Add Route" : "Update Route")</button>
+    </form>
+</div>
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
+<script>
+   
+    $(function () {
+        // input change event
+        $("#startingPointSearch").on("input", function () {
+            var selectedId = getSelectedDestinationId($(this).val());
+            $("#DepartureDestinationId").val(selectedId);
+        });
+    })
+
+    function getSelectedDestinationId(destinationName) {
+        var options = $("#destinationst").find("option");
+        for (var i = 0; i < options.length; i++) {
+            if (options[i].value === destinationName) {
+                return options[i].getAttribute("data-id");
+            }
+        }
+        return "";
+    }
+    $(function () {
+        //input change event 
+        $("#EndPointSearch").on("input", function () {
+            var selectedId = getSelectedDestinationId($(this).val());
+            $("#ArrivalDestinationId").val(selectedId);
+        });
+    });
+
+
+    document.getElementById('RouteName').addEventListener('blur', function () {
+        var routeName = this.value;
+        var validationMessage = validateRouteName(routeName); 
+
+        document.getElementById('RouteNameValidationMessage').innerText = validationMessage;
+    });
+
+    function validateRouteName(routeName) {
+        if (!routeName) {
+            return "Route Name is required.";
+        }
+
+        if (routeName.length < 10 || routeName.length > 100) {
+            return "Route Name must be between 10 and 100 characters.";
+        }
+
+
+        return "";  // no validation error
+    }
+   
+    document.getElementById('BaseFare').addEventListener('blur', function () {
+        var baseFare = this.value;
+        var validationMessage = validateBaseFare(baseFare);  
+
+        document.getElementById('BaseFareValidationMessage').innerText = validationMessage;
+    });
+
+    function validateBaseFare(baseFare) {
+        if (!baseFare && baseFare == 0) {
+            return "Base Fare is required.";
+        }
+
+        if (!/^\d+$/.test(baseFare)) {
+            return "Base Fare must be a valid number.";
+        }
+
+        if (parseInt(baseFare) < 20 || parseInt(baseFare) > 10000) {
+            return "Base Fare must be between 20 and 10000.";
+        }
+
+        return "";  
+    }
+
+
+    setTimeout(function () {
+        document.getElementById('errorAlert').classList.add('hidden');
+    }, 3000);
+
+</script>
+

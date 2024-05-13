@@ -1,0 +1,129 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewData["Title"] = "Schedules";
+}
+@if (TempData["SuccessMessage"] != null)
+{
+    <div id="successAlert" class="alert alert-success">@TempData["SuccessMessage"]</div>
+}
+@if (TempData["ErrorMessage"] != null)
+{
+    <div id="errorAlert" class="alert alert-danger">@TempData["ErrorMessage"]</div>
+}
+
+@model List<TicketReservation.App.Models.Schedules>
+<style>
+   
+    .fade-out {
+        opacity: 1;
+        transition: opacity 2s ease-out; 
+    }
+
+    .hidden {
+        display: none;
+    }
+
+</style>
+
+    <div class="d-flex justify-content-between align-items-center">
+        <h1 class="text-center mb-4">Schedules</h1>
+        
+        <div class="row">
+            <div class="col-6">
+                <div>
+                    <a class="btn btn-success " asp-action="AddScheduleView" asp-controller="Adminstrator" >Add Schedule</a>
+                </div>
+            </div>
+          
+        </div>
+    </div>
+    <table class="table table-bordered">
+        <thead class="thead-dark">
+            <tr>
+                <th scope="col">Schedule Id</th>
+                <th scope="col">DepartureTime</th>
+                <th scope="col">ArrivalTime</th>
+                <th scope="col">Schedule Status</th>
+                <th scope="col">Status </th>
+                <th scope="col">Mode of Transport</th>
+                <th scope="col">Time Of Day</th>
+                <th scope="col">Route Name</th>
+                <th scope="col">Vehicle Name</th>
+                <th scope="col">Seat Avaliable</th>
+                <th scope="col">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var schedule in Model)
+            {
+                <tr>
+                    <th scope="row">@schedule.ScheduleId</th>
+                    <td>@schedule.DepartureTime.ToString("yyyy-MM-dd HH:mm")</td>
+                    <td>@schedule.ArrivalTime.ToString("yyyy-MM-dd HH:mm")</td>
+                    <td>
+                        @if (schedule.IsActiveSchedule)
+                        {
+                            <span class="text-success">&#10004;</span>
+                        }
+                        else
+                        {
+                            <span class="text-secondary">&#10008;</span>
+                        }
+                    </td>
+                    <td>@schedule.ScheduleStatusEnum</td>
+                    <td>@schedule.modeOfTransport</td>
+                    <td>@schedule.TimeOfDay</td>
+                    <td>
+                        @foreach (var route in schedule.routes.Where(t => t.id == schedule.RouteId))
+                        {
+                            @route.RouteName
+                        }
+                    </td>
+                    <td>
+                        @foreach (var vehicle in schedule.vehicles.Where(t => t.Id == schedule.VehicleId))
+                        {
+                            @vehicle.VehicleName
+                        }
+                    </td>
+                    <td>
+                       @schedule.seatCount
+                    </td>
+                        <td>
+                        <div class="btn-group" role="group" aria-label="Route Actions">
+                            <form asp-controller="Adminstrator" asp-action="EditScheduleView" method="get" class="d-inline">
+                                <input type="hidden" name="scheduleId" value="@schedule.ScheduleId" />
+                                <button type="submit" class="btn btn-success">Update</button>
+                            </form>
+
+                            <form asp-controller="Adminstrator" asp-action="ScheduleDeleteion" method="post" class="d-inline" onsubmit="return confirm('Are you sure you want to delete Schedule @schedule.ScheduleId?');">
+                                <input type="hidden" name="scheduleId" value="@schedule.ScheduleId" />
+                                <button type="submit" class="btn btn-danger">Delete</button>
+                            </form>
+                        </div>
+                        </td>
+
+                </tr>
+            }
+        </tbody>
+    </table>
+ 
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        setTimeout(function () {
+            var successAlert = document.getElementById('successAlert');
+            var errorAlert = document.getElementById('errorAlert');
+
+            if (successAlert) {
+                successAlert.classList.add('hidden');
+            }
+
+            if (errorAlert) {
+                errorAlert.classList.add('hidden');
+            }
+        }, 5000);
+    });
+</script>
+
+
